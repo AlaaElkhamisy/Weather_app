@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:weather/cubits/weather_cubit.dart';
 import 'package:weather/cubits/weather_cubit/weather_state.dart';
 import 'package:weather/models/weather_model.dart';
 import 'package:weather/pages/search_page.dart';
-import 'package:weather/providers/weather_provider.dart';
+import 'package:weather/services/success_body.dart';
 
 class HomePage extends StatelessWidget {
   WeatherModel? weatherData;
@@ -32,70 +31,8 @@ class HomePage extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (state is Weather_Success) {
-          return Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-              colors: [
-                weatherData!.getThemeColor(),
-                weatherData!.getThemeColor()[300]!,
-                weatherData!.getThemeColor()[100]!,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(
-                  flex: 3,
-                ),
-                Text(
-                  Provider.of<WeatherProvider>(context).cityName!,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'updated at : ${weatherData!.date.hour.toString()}:${weatherData!.date.minute.toString()}',
-                  style: TextStyle(
-                    fontSize: 22,
-                  ),
-                ),
-                Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Image.asset(weatherData!.getImage()),
-                    Text(
-                      weatherData!.temp.toInt().toString(),
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Text('maxTemp :${weatherData!.maxTemp.toInt()}'),
-                        Text('minTemp : ${weatherData!.minTemp.toInt()}'),
-                      ],
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Text(
-                  weatherData!.weatherStateName,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Spacer(
-                  flex: 5,
-                ),
-              ],
-            ),
-          );
+          weatherData = BlocProvider.of<WeatherCubit>(context).weatherModel;
+          return SuccessBody(weatherData: weatherData);
         } else if (state is Weather_Error) {
           return Center(
             child: Text("Some thing went wrong"),

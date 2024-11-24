@@ -7,6 +7,7 @@ class WeatherCubit extends Cubit<WeatherState> {
   WeatherCubit(this.weatherService) : super(Weather_Initial());
   WeatherService weatherService;
   WeatherModel? weatherModel;
+  String? cityName;
   void getWeather({required String cityName}) async {
     emit(Weather_Loading());
     try {
